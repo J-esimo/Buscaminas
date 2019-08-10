@@ -45,6 +45,8 @@ class Game:
         self.matrix = []
         self.game_over = False
         self.bombs = 13
+        self.font = py.font.SysFont("Chandas", 30)
+        self.text = self.font.render("Game Over!", True, (0, 0, 0))
         py.display.set_caption("Buscaminas")
         for i in range(self.rows):
             self.matrix.append([])
@@ -92,12 +94,13 @@ class Game:
                 sys.exit(0)
             if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_position = py.mouse.get_pos()
-                for sprite in self.sprites:
-                    if sprite.rect.collidepoint(mouse_position) and not sprite.is_bomb:
-                        self.show_cells(sprite.r, sprite.c)
-                    elif sprite.rect.collidepoint(mouse_position) and sprite.is_bomb:
-                        self.game_over = True
-                        print("Boom!")
+                if not self.game_over:
+                    for sprite in self.sprites:
+                        if sprite.rect.collidepoint(mouse_position) and not sprite.is_bomb:
+                            self.show_cells(sprite.r, sprite.c)
+                        elif sprite.rect.collidepoint(mouse_position) and sprite.is_bomb:
+                            self.game_over = True
+                            print("Boom!")
     
     def countBombs(self, row, col):
         count = 0
@@ -118,6 +121,8 @@ class Game:
             for j in range(self.cols):
                 if self.matrix[i][j].is_visible:
                     self.window.blit(self.matrix[i][j].text, self.matrix[i][j].text_rect)
+        if self.game_over:
+            self.window.blit(self.text, (290, 50))
         py.display.flip()
 
 def main():
