@@ -44,9 +44,9 @@ class Game:
         self.w, self.h = 30, 30
         self.matrix = []
         self.game_over = False
-        self.bombs = 13
+        self.bombs = 10
         self.font = py.font.SysFont("Chandas", 30)
-        self.text = self.font.render("Game Over!", True, (0, 0, 0))
+        self.text = self.font.render("Game Over!", True, (255, 0, 0))
         py.display.set_caption("Buscaminas")
         for i in range(self.rows):
             self.matrix.append([])
@@ -54,10 +54,17 @@ class Game:
                 self.matrix[i].append(Block(self.w, self.h, self.x + j * (self.w + 5), self.y + i * (self.h + 5)))
                 self.matrix[i][j].r = i
                 self.matrix[i][j].c = j
+        index = []
+        x = rand.randint(0, self.rows - 1)
+        y = rand.randint(0, self.cols - 1)
+        element = [x, y]
         for i in range(self.bombs):
-            x = rand.randint(0, self.rows - 1)
-            y = rand.randint(0, self.cols - 1)
-            self.matrix[x][y].is_bomb = True
+            index.append(element)
+            self.matrix[element[0]][element[1]].is_bomb = True
+            while element in index:
+                x = rand.randint(0, self.rows - 1)
+                y = rand.randint(0, self.cols - 1)
+                element = [x, y]
         for i in range(self.rows):
             for j in range(self.cols):
                 if not self.matrix[i][j].is_bomb:
