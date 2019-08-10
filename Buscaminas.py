@@ -76,7 +76,7 @@ class Game:
                     if sprite.rect.collidepoint(mouse_position) and not sprite.is_bomb:
                         sprite.is_visible = True    
                         sprite.text = sprite.font.render(str(sprite.nBombs), True, (0, 0, 0))
-                        sprite.text_rect = sprite.text.get_rect(center=sprite.rect.center)
+                        sprite.text_rect = sprite.text.get_rect(center = sprite.rect.center)
                     elif sprite.rect.collidepoint(mouse_position) and sprite.is_bomb:
                         print("Boom!")
     
