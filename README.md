@@ -1,1 +1,1 @@
-# Buscaminas
+# Buscaminas hecho con Pygame
