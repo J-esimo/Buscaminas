@@ -31,14 +31,14 @@ class Block(py.sprite.Sprite):
 
 class Game:
     def __init__(self):
-        self.width = 1280
-        self.height = 720
+        self.width = 800
+        self.height = 600
         self.isRunning = True
         self.window = py.display.set_mode([self.width, self.height])
         self.sprites = py.sprite.Group()
         self.rows = 10
         self.cols = 10
-        self.x, self.y = 500, 200
+        self.x, self.y = 230, 150
         self.w, self.h = 30, 30
         self.matrix = []
         self.bombs = 13
