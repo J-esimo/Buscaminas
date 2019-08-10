@@ -22,6 +22,8 @@ class Block(py.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.nBombs = 0
+        self.r = 0
+        self.c = 0
         self.is_bomb = False
         self.is_visible = False
         self.font = py.font.SysFont("Chandas", 15)
@@ -41,12 +43,15 @@ class Game:
         self.x, self.y = 230, 150
         self.w, self.h = 30, 30
         self.matrix = []
+        self.game_over = False
         self.bombs = 13
         py.display.set_caption("Buscaminas")
         for i in range(self.rows):
             self.matrix.append([])
             for j in range(self.cols):
                 self.matrix[i].append(Block(self.w, self.h, self.x + j * (self.w + 5), self.y + i * (self.h + 5)))
+                self.matrix[i][j].r = i
+                self.matrix[i][j].c = j
         for i in range(self.bombs):
             x = rand.randint(0, self.rows - 1)
             y = rand.randint(0, self.cols - 1)
@@ -63,7 +68,22 @@ class Game:
             self.events()
             self.draw()
             clock.tick(60)
-    
+            
+    def show_cells(self, row, col):
+        if not self.matrix[row][col].is_visible:
+            self.matrix[row][col].is_visible = True
+            self.matrix[row][col].text = self.matrix[row][col].font.render(str(self.matrix[row][col].nBombs), True, (0, 0, 0))
+            self.matrix[row][col].text_rect = self.matrix[row][col].text.get_rect(center = self.matrix[row][col].rect.center)
+            if self.matrix[row][col].nBombs == 0:
+                for i in range(row - 1, row + 2):
+                    for j in range(col - 1, col + 2):
+                        if i < 0 or i >= self.rows or j < 0 or j >= self.cols:
+                            continue
+                        if i == row and j == col:
+                            continue
+                        if not self.matrix[i][j].is_bomb:
+                            self.show_cells(i, j)
+            
     def events(self):
         for event in py.event.get():
             if event.type == py.QUIT:
@@ -74,10 +94,9 @@ class Game:
                 mouse_position = py.mouse.get_pos()
                 for sprite in self.sprites:
                     if sprite.rect.collidepoint(mouse_position) and not sprite.is_bomb:
-                        sprite.is_visible = True    
-                        sprite.text = sprite.font.render(str(sprite.nBombs), True, (0, 0, 0))
-                        sprite.text_rect = sprite.text.get_rect(center = sprite.rect.center)
+                        self.show_cells(sprite.r, sprite.c)
                     elif sprite.rect.collidepoint(mouse_position) and sprite.is_bomb:
+                        self.game_over = True
                         print("Boom!")
     
     def countBombs(self, row, col):
